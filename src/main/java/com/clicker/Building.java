@@ -27,6 +27,11 @@ public class Building {
         quantity += toAdd;
     }
 
+    void reset() {
+        quantity = 0;
+        cpsMultiplier = 1.0;
+    }
+
     public String getName() {
         return this.name;
     }

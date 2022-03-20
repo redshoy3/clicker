@@ -77,4 +77,10 @@ public class BuildingMatrix {
         }
         return cpsCounter;
     }
+
+    public void resetBuildings() {
+        for (Building b : buildingMap.values()) {
+            b.reset();
+        }
+    }
 }

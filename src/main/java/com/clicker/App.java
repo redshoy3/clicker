@@ -1,6 +1,8 @@
 package com.clicker;
 
-import java.lang.Thread;
+import java.io.IOException;
+import java.lang.System.Logger;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -8,8 +10,8 @@ import java.util.TimerTask;
  * Hello world!
  */
 public final class App {
-    static final Player player = Player.getInstance();
-    static final BuildingMatrix bMatrix = BuildingMatrix.make();
+    private static final Player player = Player.getInstance();
+    private static final BuildingMatrix bMatrix = BuildingMatrix.make();
     Timer timer;
     
     private App() {
@@ -19,16 +21,7 @@ public final class App {
      * Says hello to the world.
      * @param args The arguments of the program.
      */
-    public static void main(String[] args) {
-        
-        
-        player.getClicks();
-        //Thread.sleep(20000);
-        for (Building b : bMatrix.getMatrix().values()) {
-            System.out.println(b.toString());
-        }
-        System.out.println(bMatrix.getTotalCps());
-    }
+
 
     public static Player getPlayer() {
         return player;
@@ -39,12 +32,34 @@ public final class App {
     }
 
     public static void update() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            public void run() {
-                player.addClicks( (int) bMatrix.getTotalCps());
-                System.out.println(String.valueOf(player.getClicks()));
+        readConsole();
+        player.addClicks( (int) bMatrix.getTotalCps());
+            
+    }
+
+    private static void readConsole() {
+        boolean available = false;
+        try { available = System.in.available() > 0;}
+        catch (IOException e) {
+            System.out.println(e.getLocalizedMessage());
+        } 
+        if (available) {
+        Scanner scanner = new Scanner(System.in);
+        if (scanner.hasNextLine()) {
+            String text = scanner.nextLine();
+            if (text.indexOf("/") == 0) {
+                ConsoleParser.parse(text);
             }
-        }, 0, 1000);
+        }
+    }
+}
+
+    public static void reset() {
+        player.reset();
+        bMatrix.resetBuildings();
+    }
+
+    public void run() {
+        update();
     }
 }

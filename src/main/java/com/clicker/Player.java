@@ -31,4 +31,8 @@ public class Player {
     public void purchase(String building) {
         Purchase.purchase(building);
     }
+
+    public void reset() {
+        removeClicks(this.clicks);
+    }
 }

@@ -12,6 +12,9 @@ import javax.swing.*;
 class Gui{
     static JPanel panel;
     static JPanel clicksPanel;
+    static Map<String, JButton> buttonMap;
+    private static final Player PLAYER = App.getPlayer(); 
+    private static final BuildingMatrix B_MATRIX = App.getBMatrix();
     public static void main(String args[]){
        JFrame frame = new JFrame("Harold Pants: Pro Skater");
        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,23 +23,23 @@ class Gui{
        panel = new JPanel(new GridLayout(10, 1));
        clicksPanel = new JPanel(new GridLayout(1,2));
 
-       Map<String, JButton> buttonMap = new HashMap<>();
+       buttonMap = new HashMap<>();
        Map<String, JLabel> labelMap = new HashMap<>();
 
-       JLabel playerClicksLabel = new JLabel(Long.toString(App.getPlayer().getClicks()));
+       JLabel playerClicksLabel = new JLabel(Long.toString(PLAYER.getClicks()));
        JButton clickButton = new JButton("Jam on 'em");
 
        clickButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            App.getPlayer().addClicks(10);
-            playerClicksLabel.setText(Long.toString(App.getPlayer().getClicks()));
+            PLAYER.addClicks(10);
+            playerClicksLabel.setText(Long.toString(PLAYER.getClicks()));
         }});
 
         clicksPanel.add(clickButton);
 
-       for (String buildingName : App.getBMatrix().getMatrix().keySet()) {
-            labelMap.put(buildingName, new JLabel(String.valueOf(App.getBMatrix().getQuantity(buildingName))));
-            buttonMap.put(buildingName, new JButton(String.format("Purchase %s", buildingName)));
+       for (String buildingName : B_MATRIX.getMatrix().keySet()) {
+            labelMap.put(buildingName, new JLabel(String.valueOf(B_MATRIX.getQuantity(buildingName))));
+            buttonMap.put(buildingName, new JButton(String.format("Purchase %s: %s", buildingName, B_MATRIX.getNextPurchaseCost(buildingName))));
             JButton button = buttonMap.get(buildingName);
             JPanel innerPanel = new JPanel(new GridLayout(1,2));
             button.setSize(80, 80);
@@ -46,10 +49,8 @@ class Gui{
                 public void actionPerformed(ActionEvent e) {
                     //clean this up, make the gui update into a method.
                     String buttonName = e.getActionCommand();
-                    App.getPlayer().purchase(buttonName);
-                    labelMap.get(buttonName).setText(Integer.toString(App.getBMatrix().getQuantity(buttonName)));
-                    buttonMap.get(buttonName).setText(String.format("Purchase %s: %s", buttonName, Long.valueOf(App.getBMatrix().getNextPurchaseCost(buttonName))));
-                    playerClicksLabel.setText(Long.toString(App.getPlayer().getClicks()));
+                    PLAYER.purchase(buttonName);
+
                 }
             });
 
@@ -67,22 +68,35 @@ class Gui{
        frame.add(outerPanel);
        frame.pack();
        frame.setVisible(true);
-       update();
 
-       Timer timer = new Timer();
-       timer.schedule(new TimerTask() {
+       Timer appTimer = new Timer();
+       appTimer.scheduleAtFixedRate(new TimerTask() {
+           @Override
            public void run() {
-                playerClicksLabel.setText(Long.toString(App.getPlayer().getClicks()));
-                for (String s : buttonMap.keySet()) {
-                    if (App.getPlayer().getClicks() >= App.getBMatrix().getNextPurchaseCost(s)) {
-                        buttonMap.get(s).setEnabled(true);
-                    }
+               App.update();
+               
+           };     
+       }, 0, 1000);
 
-                    else {buttonMap.get(s).setEnabled(false);}
+       //appThread.start();
+
+       Timer guiTimer = new Timer();
+       guiTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                playerClicksLabel.setText(Long.toString(PLAYER.getClicks()));
+                updateClickableUpgrades();
+                for (String buildingName : B_MATRIX.getMatrix().keySet()) {
+                labelMap.get(buildingName).setText(Integer.toString(B_MATRIX.getQuantity(buildingName)));
+                buttonMap.get(buildingName).setText(String.format("Purchase %s: %s",
+                                             buildingName, B_MATRIX.getNextPurchaseCost(buildingName)));
+                playerClicksLabel.setText(Long.toString(PLAYER.getClicks()));
                 }
             }
-       }, 0,1000);
-       
+        
+    }, 0, 10);
+
+        
     }
 
 
@@ -90,4 +104,12 @@ class Gui{
         App.update();
     }
 
+    private static void updateClickableUpgrades() {
+        for (String s : buttonMap.keySet()) {
+            if (PLAYER.getClicks() >= B_MATRIX.getNextPurchaseCost(s)) {
+                buttonMap.get(s).setEnabled(true);
+            }
+            else {buttonMap.get(s).setEnabled(false);}
+        }
+    }
 }

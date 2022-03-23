@@ -26,24 +26,29 @@ class Gui{
        buttonMap = new HashMap<>();
        Map<String, JLabel> labelMap = new HashMap<>();
 
-       JLabel playerClicksLabel = new JLabel(Long.toString(PLAYER.getClicks()));
+    //THIS IS WHERE THE MAIN BUTTON IS DEFINED
+       JLabel playerClicksLabel = new JLabel(
+                        String.format("Clicks produced: %s", Long.toString(PLAYER.getClicks()/10)));
        JButton clickButton = new JButton("Jam on 'em");
 
        clickButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            PLAYER.addClicks(10);
-            playerClicksLabel.setText(Long.toString(PLAYER.getClicks()));
+            PLAYER.clickButton();
+            playerClicksLabel.setText(String.format("Clicks produced: %s", Long.toString(PLAYER.getClicks()/10)));
+            clickButton.setToolTipText(String.format("Times clicked: %s Clicks From Clicking: %s",
+                PLAYER.getTimesClicked(), 
+                PLAYER.getClicksFromClicking()/10));
         }});
 
         clicksPanel.add(clickButton);
 
        for (String buildingName : B_MATRIX.getMatrix().keySet()) {
             labelMap.put(buildingName, new JLabel(String.valueOf(B_MATRIX.getQuantity(buildingName))));
-            buttonMap.put(buildingName, new JButton(String.format("Purchase %s: %s", buildingName, B_MATRIX.getNextPurchaseCost(buildingName))));
+            buttonMap.put(buildingName, new JButton(String.format("Purchase %s: %s", buildingName, B_MATRIX.getNextPurchaseCost(buildingName)/10)));
             JButton button = buttonMap.get(buildingName);
             JPanel innerPanel = new JPanel(new GridLayout(1,2));
             button.setSize(80, 80);
-            button.setActionCommand(buildingName);
+            button.setActionCommand(buildingName);  
 
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -84,13 +89,13 @@ class Gui{
        guiTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                playerClicksLabel.setText(Long.toString(PLAYER.getClicks()));
+                playerClicksLabel.setText(String.format("Clicks produced: %s", Long.toString(PLAYER.getClicks()/10)));
                 updateClickableUpgrades();
                 for (String buildingName : B_MATRIX.getMatrix().keySet()) {
-                labelMap.get(buildingName).setText(Integer.toString(B_MATRIX.getQuantity(buildingName)));
-                buttonMap.get(buildingName).setText(String.format("Purchase %s: %s",
-                                             buildingName, B_MATRIX.getNextPurchaseCost(buildingName)));
-                playerClicksLabel.setText(Long.toString(PLAYER.getClicks()));
+                    labelMap.get(buildingName).setText(Integer.toString(B_MATRIX.getQuantity(buildingName)));
+                    buttonMap.get(buildingName).setText(String.format("Purchase %s: %s",
+                                             buildingName, B_MATRIX.getNextPurchaseCost(buildingName)/10));
+                    buttonMap.get(buildingName).setToolTipText(String.format("Total CPS: %s %nClicks produced: %s", B_MATRIX.getBuildingCps(buildingName)/10, B_MATRIX.getClicksProduced(buildingName)/10));
                 }
             }
         

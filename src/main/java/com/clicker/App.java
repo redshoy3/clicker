@@ -33,7 +33,7 @@ public final class App {
 
     public static void update() {
         readConsole();
-        player.addClicks( (int) bMatrix.getTotalCps());
+        player.addClicks(bMatrix.updateTotalCps());
             
     }
 

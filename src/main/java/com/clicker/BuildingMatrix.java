@@ -2,7 +2,7 @@ package com.clicker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -18,7 +18,7 @@ public class BuildingMatrix {
     }
 
     private BuildingMatrix() {
-        this.buildingMap = new HashMap<>();
+        this.buildingMap = new LinkedHashMap<>();
         this.loadBuildings();
     }
 
@@ -69,9 +69,24 @@ public class BuildingMatrix {
     public long getNextPurchaseCost(String name) {
         return buildingMap.get(name).getNextPurchaseCost();
     }
+
+    public long getBuildingCps(String name) {
+        return buildingMap.get(name).getCps();
+    }
+
+    public long getClicksProduced(String name) {
+        return buildingMap.get(name).getClicksProduced();
+    }
     
-    public double getTotalCps() {
-        double cpsCounter = 0.0;
+    public long updateTotalCps() {
+        for (Building b : buildingMap.values()) {
+            b.addClicksProduced();
+        }
+        return getTotalCps();
+    }
+
+    private long getTotalCps() {
+        long cpsCounter = 0;
         for (Building b : buildingMap.values()) {
             cpsCounter += b.getCps();
         }

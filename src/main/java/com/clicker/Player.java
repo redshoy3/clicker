@@ -1,15 +1,15 @@
 package com.clicker;
 
-import com.clicker.Purchase;
 
 public class Player {
     private long clicks;
     private long timesClicked = 0;
+    private long totalLifetimeClicks = 0;
     private double clickMultiplier;
     private long clicksFromClicking = 0;
     private static Player player = null;
 
-    private final int CLICK_POWER = 10;
+    private static final int CLICK_POWER = 10;
 
     private Player() {
             this.clicks = 150; 
@@ -29,6 +29,7 @@ public class Player {
 
     public void addClicks(long clicksAdd) {
         clicks += clicksAdd;
+        totalLifetimeClicks += clicksAdd;
     } 
 
     public long getTimesClicked() {
@@ -53,6 +54,11 @@ public class Player {
         return this.clicksFromClicking;
     }
 
+    public long getTotalLifetimeClicks() {
+        return totalLifetimeClicks;
+    }
+
+
     private void addClicksfromClicking() {
         clicksFromClicking += getClickPower();
     }
@@ -61,8 +67,15 @@ public class Player {
         clicks -= clicksDrop;
     }
 
+    public void updateClickMultiplier(double mult) {
+        clickMultiplier += mult;
+    }
     public void purchase(String building) {
         Purchase.purchase(building);
+    }
+
+    public boolean purchaseUpgrade(String upgrade) {
+        return Purchase.purchaseUpgrade(upgrade);
     }
 
     public void reset() {

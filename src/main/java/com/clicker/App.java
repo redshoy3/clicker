@@ -12,6 +12,7 @@ import java.util.TimerTask;
 public final class App {
     private static final Player player = Player.getInstance();
     private static final BuildingMatrix bMatrix = BuildingMatrix.make();
+    private static final UpgradeMatrix uMatrix = UpgradeMatrix.make();
     Timer timer;
     
     private App() {
@@ -29,6 +30,10 @@ public final class App {
 
     public static BuildingMatrix getBMatrix() {
         return bMatrix;
+    }
+
+    public static UpgradeMatrix getUMatrix() {
+        return uMatrix;
     }
 
     public static void update() {

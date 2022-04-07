@@ -11,7 +11,7 @@ public class ConsoleParser {
         switch (d) {
             case GIVE: {
                 try {
-                player.addClicks(Long.valueOf(command[1]));
+                player.addClicks(Long.valueOf(command[1])*10);
                 }
                 catch (Exception e) {
                     System.out.println(e.getLocalizedMessage());

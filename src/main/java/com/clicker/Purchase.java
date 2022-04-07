@@ -11,5 +11,17 @@ public class Purchase {
             player.removeClicks(price);
             priceMatrix.updateQuantity(name, 1);
         }
-    }    
+    }
+    
+    public static boolean purchaseUpgrade(String name) {
+        UpgradeMatrix upgradeMatrix = App.getUMatrix();
+        Player player = App.getPlayer();
+        long cost =  upgradeMatrix.getCost(name);
+        if (player.getClicks() >= cost) {
+            upgradeMatrix.apply(name);
+            player.removeClicks(cost);
+            return true;
+        }
+    return false;
+    }
 }

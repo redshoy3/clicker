@@ -1,0 +1,13 @@
+click upgrade 1,Player,10,.2,1000
+click upgrade 3,Player,10,.2,1000
+click upgrade 4,Player,10,.2,1000
+click upgrade 5,Player,10,.2,1000
+click upgrade 6,Player,10,.2,1000
+click upgrade 7,Player,10,.2,1000
+click upgrade 8,Player,10,.2,1000
+click upgrade 9,Player,10,.2,1000
+click upgrade 10,Player,10,.2,1000
+click upgrade 11,Player,10,.2,1000
+clicker upgrade 1,Clicker,25,1.0,4000
+farm upgrade 1,Farm,25,.5,100000
+click upgrade 2,Player,100,.3,3000
